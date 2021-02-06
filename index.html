@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Reggaeton Machine - Crea tu Hit</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"
+        integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
+
+    <meta property="og:image" content="https://vivirenremoto.github.io/reggaeton/static/social.png">
+    <meta property="og:image:secure_url" content="https://vivirenremoto.github.io/reggaeton/static/social.png">
+    <meta property="og:image:alt" content="Reggaeton Machine - Crea tu Hit">
+    <meta property="og:image:type" content="image/png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Reggaeton Machine - Crea tu Hit">
+    <meta name="twitter:image" content="https://vivirenremoto.github.io/reggaeton/static/social.png">
+
+
+
+</head>
+
+<body>
+
+
+    <style>
+        *,
+        button {
+            font-size: 15px;
+            font-family: arial;
+        }
+
+
+
+        #popup_share,
+        #popup_share * {
+            font-size: 40px !important;
+        }
+
+        #tracks button {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 0;
+            background: #d9d9d9;
+            cursor: pointer;
+        }
+
+        .track {
+            border-radius: 3px;
+            cursor: move;
+            background: white;
+            position: absolute;
+            display: inline-block;
+            border: 2px black solid;
+            padding: 5px;
+            font-size: 12px;
+            text-transform: lowercase;
+            width: 400px;
+        }
+
+        .btn_del {
+            float: right;
+            cursor: pointer;
+            font-weight: bold;
+            background: red;
+            color: white;
+            border: 0;
+            margin-left: 7px;
+            padding: 10px 15px;
+            position: relative;
+            margin-top: -5px;
+            margin-bottom: -5px;
+            margin-right: -5px;
+        }
+
+        #tools svg {
+            position: relative;
+            bottom: -3px;
+        }
+
+        #title svg {
+            margin-left: 5px;
+        }
+
+        #btn_color {
+            position: relative;
+            bottom: -4px;
+            height: 25px;
+        }
+
+        #tools_padding {
+            padding: 15px;
+        }
+
+        .track_text {
+            width: 355px;
+            display: inline-block;
+            text-align: center;
+            padding-top: 5px;
+        }
+
+        @media screen and (max-width: 480px) {
+            #tools {
+                overflow-x: scroll;
+                overflow-y: hidden;
+            }
+
+            #tools svg {
+                width: 20px;
+                height: 20px;
+            }
+
+            #tools_padding {
+                width: 500px;
+                padding: 10px 15px;
+            }
+
+            .track {
+                width: 300px;
+            }
+
+            .track_text {
+                padding-top: 8px;
+                font-size: 11px;
+                width: 255px;
+            }
+
+            .track_text span {
+                font-size: 11px;
+            }
+
+            #tools span {
+                display: none;
+            }
+
+            #btn_color {
+                height: 30px;
+            }
+
+            #tracks button {
+                font-size: 13px;
+            }
+        }
+    </style>
+
+
+
+
+    <div id="popup_share"
+        style="padding:50px;display:none;position:fixed;text-align:center;background:#ccc;left:0;right:0;bottom:0;top:0;">
+        <h2>COMPARTIR</h2>
+
+        <br>
+        <button onclick="tweet()" style="padding:15px 20px">TWITEAR</button>
+
+
+        <br>
+        <br>
+        <br>
+        URL
+        <br>
+        <input id="code" onclick="this.select();" style="width:100%;" readonly="readonly">
+
+        <br>
+        <br>
+        <br>
+
+        <button id="btn_close" style="padding:15px 20px">CERRAR</button>
+    </div>
+
+
+
+    <div id="editor">
+
+
+        <div style="z-index:2;background:black;position:fixed;left:0;right:0;top:0;height:50px;">
+            <div style="cursor:pointer;font-size:20px;text-align:center;padding:15px;color:white;" id="title">
+                tu canción
+            </div>
+        </div>
+
+        <div id="tools"
+            style="background-image:linear-gradient(#666, #efefef);position:fixed;left:0;right:0;top:50px;height:55px">
+            <div id="tools_padding">
+                <button onclick="play()">
+
+                    <svg style="color:green" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" class="bi bi-play-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M11.596 8.697l-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z" />
+                    </svg>
+
+                    <span>PLAY</span>
+
+                </button>
+                <button onclick="stop();">
+
+                    <svg style="color:red" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                        class="bi bi-stop-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M5 3.5h6A1.5 1.5 0 0 1 12.5 5v6a1.5 1.5 0 0 1-1.5 1.5H5A1.5 1.5 0 0 1 3.5 11V5A1.5 1.5 0 0 1 5 3.5z" />
+                    </svg>
+
+                    <span>STOP</span>
+
+                </button>
+                <button onclick="pause()">
+
+                    <svg style="color:blue" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" class="bi bi-pause-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M5.5 3.5A1.5 1.5 0 0 1 7 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5zm5 0A1.5 1.5 0 0 1 12 5v6a1.5 1.5 0 0 1-3 0V5a1.5 1.5 0 0 1 1.5-1.5z" />
+                    </svg>
+
+                    <span>PAUSE</span>
+
+                </button>
+                <button onclick="change_music(this)" id="btn_loop"><span>MUSIC</span> 1</button>
+                <button onclick="change_speed(this)" id="btn_speed"><span>SPEED</span> 1X</button>
+                <button onclick="show_share()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" class="bi bi-envelope-fill" viewBox="0 0 16 16">
+                        <path
+                            d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555zM0 4.697v7.104l5.803-3.558L0 4.697zM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757zm3.436-.586L16 11.801V4.697l-5.803 3.546z" />
+                    </svg> <span>COMPARTIR</span></button>
+
+                <button onclick="new_track()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        fill="currentColor" class="bi bi-file-earmark" viewBox="0 0 16 16">
+                        <path
+                            d="M14 4.5V14a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2a2 2 0 0 1 2-2h5.5L14 4.5zm-3 0A1.5 1.5 0 0 1 9.5 3V1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V4.5h-2z" />
+                    </svg> <span>NUEVO</span></button>
+
+                <input type="color" id="btn_color" value="#ffff00">
+
+            </div>
+        </div>
+
+
+        <div id="main_timeline"
+            style="background:#efefef;position:fixed;left:0;right:0;top:105px;bottom:25%;overflow-y:scroll;overflow-x:hidden;">
+            <div id="timeline" style="width:100%;height:1600px;">
+                <hr id="line" noshade="noshade"
+                    style="display:block;margin:0;background:red;color:red;position:absolute;left:0;right:0;top:0;z-index:99;">
+
+                <div style="position:absolute;width:100%;text-align:center;margin-top:5px;">línea temporal aqui puedes
+                    hacer scroll ▼
+                </div>
+            </div>
+        </div>
+
+        <div id="tracks" style="overflow-y:scroll;background:#fff;position:fixed;left:0;right:0;bottom:0;height:25%">
+            <div style="padding:15px;">
+                <p align="center" style="margin-top:0;">pulsa una frase para añadir a tu canción
+                </p>
+
+
+
+                <button>como lo puedo hacer</button>
+                <button>si los dos nos gustamos</button>
+                <button>susurrando al oido</button>
+
+
+                <button>baribababa</button>
+                <button>fumamos bailamos toda la noche</button>
+                <button>no se como terminamos en mi cama</button>
+                <button>todavia no se como se llama</button>
+
+
+                <button>hoy salio con su amiga</button>
+                <button>que pasa contigo</button>
+                <button>rrrrr</button>
+                <button>se canso de ser buena</button>
+                <button>ya no tiene excusa</button>
+
+
+                <button>que yo estaba contigo perreando y de ella me olvide</button>
+                <button>yo creo en el amor pero no el que siente</button>
+                <button>dicen que soy un delincuente</button>
+                <button>ella lo que quiere es joder</button>
+                <button>estar soltera esta de moda</button>
+                <button>por eso ella no se enamora</button>
+                <button>vacilar</button>
+            </div>
+        </div>
+
+
+        <audio id="loop" loop>
+            <source src="static/loop1.mp3" type="audio/mp3">
+        </audio>
+
+
+        <audio id="track1">
+            <source src="static/dicen que soy un delincuente.mp3" type="audio/mp3">
+        </audio>
+
+        <audio id="track2">
+            <source src="static/dicen que soy un delincuente.mp3" type="audio/mp3">
+        </audio>
+
+    </div>
+
+    <script src='https://www.jqueryscript.net/demo/Mobile-Drag-Drop-Plugin-jQuery/draganddrop.js'
+        type='text/javascript'></script>
+
+
+    <script>
+        var base_url = 'https://vivirenremoto.github.io/reggaeton/';
+        var title = 'tu cancion';
+        var background = 'E9C32D';
+        var icon_edit = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-fill" viewBox="0 0 16 16"><path d="M12.854.146a.5.5 0 0 0-.707 0L10.5 1.793 14.207 5.5l1.647-1.646a.5.5 0 0 0 0-.708l-3-3zm.646 6.061L9.793 2.5 3.293 9H3.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.5h.5a.5.5 0 0 1 .5.5v.207l6.5-6.5zm-7.468 7.468A.5.5 0 0 1 6 13.5V13h-.5a.5.5 0 0 1-.5-.5V12h-.5a.5.5 0 0 1-.5-.5V11h-.5a.5.5 0 0 1-.5-.5V10h-.5a.499.499 0 0 1-.175-.032l-.179.178a.5.5 0 0 0-.11.168l-2 5a.5.5 0 0 0 .65.65l5-2a.5.5 0 0 0 .168-.11l.178-.178z"/></svg>';
+        var icon_music = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-music-note-beamed" viewBox="0 0 16 16"><path d="M6 13c0 1.105-1.12 2-2.5 2S1 14.105 1 13c0-1.104 1.12-2 2.5-2s2.5.896 2.5 2zm9-2c0 1.105-1.12 2-2.5 2s-2.5-.895-2.5-2 1.12-2 2.5-2 2.5.895 2.5 2z"/><path fill-rule="evenodd" d="M14 11V2h1v9h-1zM6 3v10H5V3h1z"/><path d="M5 2.905a1 1 0 0 1 .9-.995l8-.8a1 1 0 0 1 1.1.995V3L5 4V2.905z"/></svg>';
+        var icon_speed = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clock" viewBox="0 0 16 16"><path d="M8 3.5a.5.5 0 0 0-1 0V9a.5.5 0 0 0 .252.434l3.5 2a.5.5 0 0 0 .496-.868L8 8.71V3.5z"/><path d="M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16zm7-8A7 7 0 1 1 1 8a7 7 0 0 1 14 0z"/></svg>';
+        var is_playing = false;
+
+        var separator = '------------';
+        var separator2 = '|';
+        var track_timer;
+
+        var speed = 1;
+        var music = 1;
+
+        var tracks = [];
+
+        var screen_height = $(document).height();
+        var screen_width = $(document).width();
+        var timeline_height = $('#timeline').height();
+
+
+        var time_remove;
+        var time_remove_max = 2;
+        var timer_remove;
+
+
+        $('#title').html(title + ' ' + icon_edit);
+        $('#btn_color').val(background);
+        //$('#timeline').css('background', background);
+        $('#timeline').css('background-image', 'linear-gradient(#' + background + ', white)');
+
+        $('#btn_loop').html(icon_music + ' <span>MUSIC </span>' + music);
+        $('#btn_speed').html(icon_speed + ' <span>SPEED </span>' + speed + 'X');
+
+
+        $('#timeline').click(function (e) {
+            if (!is_playing) {
+                $('#line').css('top', (e.pageY - 105 + $('#main_timeline').scrollTop()) + 'px');
+            }
+        });
+
+        $('#btn_color').change(function () {
+            background = $(this).val();
+            //$('#timeline').css('background', background);
+            $('#timeline').css('background-image', 'linear-gradient(' + background + ', white)');
+
+        });
+
+        $('#tracks button').click(function () {
+            addTrack(this);
+        });
+
+        $('#title').click(function () {
+            var title_aux = prompt("Como quires llamar a tu canción?", title);
+            if (title_aux) {
+                title = title_aux;
+                $('#title').html(title + ' ' + icon_edit);
+            }
+        });
+
+
+
+        var loop = document.getElementById('loop');
+        loop.volume = 0.4;
+
+        var track1 = document.getElementById('track1');
+        track1.volume = 1;
+
+        var track2 = document.getElementById('track2');
+        track2.volume = 1;
+
+
+
+
+        $('body').keypress(function (e) {
+            if (e.keyCode == 32) {
+                e.preventDefault();
+
+                if (loop.paused) {
+                    play();
+                } else {
+                    pause();
+                }
+            }
+        });
+
+
+
+        if (document.location.href.indexOf('?') > -1) {
+
+
+            var t_url = document.location.href.split('?');
+
+
+
+
+            var code = t_url[t_url.length - 1];
+
+
+            var code_aux = window.atob(code);
+
+            if (code_aux.indexOf(separator) > -1) {
+
+                //console.log(code_aux);
+
+
+                var t_code = code_aux.split(separator);
+
+                music = t_code[0];
+                speed = t_code[1];
+                title = t_code[2];
+                background = t_code[3];
+
+
+
+                if (music != 1) {
+                    $('#loop source').attr('src', 'static/loop' + music + '.mp3');
+                    loop.load();
+                }
+
+                $('#btn_loop').html(icon_music + ' <span>MUSIC </span>' + music);
+                $('#btn_speed').html(icon_speed + ' <span>SPEED </span>' + speed + 'X');
+                $('#title').html(title + ' ' + icon_edit);
+                //$('#timeline').css('background', '#' + background);
+
+
+                $('#timeline').css('background-image', 'linear-gradient(#' + background + ', white)');
+
+
+                $('#btn_color').val('#' + background);
+
+                var tracks_aux = t_code[4];
+                var t_tracks = tracks_aux.split(separator2);
+
+                for (var i = 0; i < t_tracks.length; i++) {
+
+                    var t_track = t_tracks[i].split(';');
+
+                    $('#timeline').append('<div  class="track"><span class="track_text">' + t_track[0] + '</span> <button onclick="removeTrack(this)" ontouchstart="removeTrack(this)" ontouchend="cancelRemoveTrack(this)" class="btn_del">✖</button> </div>')
+
+                    var track_left;
+                    if (screen_width >= 800) {
+                        track_left = t_track[1];
+                    } else {
+                        track_left = 20;
+                    }
+
+
+                    $('#timeline div:last').css('left', track_left).css('top', t_track[2]).draggable().on("dragstop", function (event, ui) { update_tracks(); });
+
+
+                }
+
+
+
+                var code = base_url + '?' + code;
+
+                $('#code').val(code);
+
+
+            }
+        }
+
+
+        $('#btn_close').click(function () {
+
+            $('#editor').show();
+            $('#popup_share').hide();
+        });
+
+        function show_share() {
+            show_code();
+            $('#editor').hide();
+            $('#popup_share').show();
+        }
+
+        function show_code() {
+
+
+            background = $('#btn_color').val().replace('#', '');
+
+            var code = '';
+            code += music;
+            code += separator;
+            code += speed;
+            code += separator;
+            code += title;
+            code += separator;
+            code += background;
+            code += separator;
+
+            $('.track').each(function (k) {
+                if (k) code += separator2;
+                code += $(this).find('.track_text').html() + ';' + $(this).css('left') + ';' + $(this).css('top');
+            });
+
+
+
+            //console.log(code);
+
+            code = window.btoa(code);
+
+
+
+            var code = base_url + '?' + code;
+
+            $('#code').val(code);
+
+
+        }
+
+        function change_speed(obj) {
+            speed++;
+
+            if (speed > 3) {
+                speed = 1;
+            }
+
+            $(obj).html(icon_speed + ' <span>SPEED </span>x' + speed);
+        }
+
+        function change_music(obj) {
+            music++;
+
+            if (music > 3) {
+                music = 1;
+            }
+
+
+            var loop_playing = !loop.paused;
+
+            $('#loop source').attr('src', 'static/loop' + music + '.mp3');
+            loop.load();
+
+            if (loop_playing) {
+                loop.play();
+            }
+
+
+
+
+
+            $(obj).html(icon_music + ' <span>MUSIC </span>' + music);
+        }
+
+        function addTrack(obj) {
+            $('#timeline').append('<div class="track"><span class="track_text">' + $(obj).html() + '</span> <button onclick="removeTrack(this)" ontouchstart="removeTrack(this)" ontouchend="cancelRemoveTrack(this)" class="btn_del">✖</button> </div>')
+
+            $('#timeline div:last').css('top', $('#main_timeline').scrollTop() + 'px').draggable().on("dragstop", function (event, ui) { update_tracks(); });
+        }
+
+        function cancelRemoveTrack(obj) {
+            clearInterval(timer_remove);
+
+
+            var track_label = $(obj).parent().find('.track_text');
+
+            setTimeout(function () {
+                $(track_label).html($(track_label).data('track')).css('color', 'black');
+
+            }, 500);
+        }
+
+        function removeTrack(obj) {
+
+
+            if (screen_width > 800) {
+                $(obj).parent().fadeOut('fast', function () { $(this).remove(); });
+                return;
+            }
+
+
+            var track_label = $(obj).parent().find('.track_text');
+
+            $(track_label).data('track', $(track_label).html());
+
+
+            $(track_label).html('mantén pulsado para borrar (<span id="countdown_remove">' + time_remove_max + '</span> seg)').css('color', 'red');
+
+            time_remove = time_remove_max;
+
+
+            timer_remove = setInterval(function () {
+                time_remove--;
+                $('#countdown_remove').html(time_remove);
+
+                if (time_remove == 0) {
+
+                    clearInterval(timer_remove);
+                    $(obj).parent().fadeOut('fast', function () { $(this).remove(); });
+                }
+            }, 1000);
+
+
+
+        }
+
+        function pause() {
+            loop.currentTime = 0;
+            is_playing = false;
+
+            loop.pause();
+            track1.pause();
+            track2.pause();
+            jQuery('#line').stop();
+            clearInterval(track_timer);
+
+
+        }
+
+
+        function stop() {
+            pause();
+            $('#line').css('top', 0);
+            $('#main_timeline').scrollTop(0);
+        }
+
+
+        function update_tracks() {
+
+
+            tracks = {};
+
+
+            $('.track').each(function () {
+                var track_top = parseInt($(this).css('top'));
+                var track_text = $(this).find('.track_text').html();
+
+                tracks[track_top] = track_text;
+            });
+        }
+
+
+
+        function tweet() {
+            window.open('https://twitter.com/intent/tweet?text=' + encodeURIComponent('Escucha mi temazo: ¡' + title + '!') + '&tw_p=tweetbutton&url=' + $('#code').val());
+
+        }
+
+        function new_track() {
+            if (confirm('¿Estás seguro que quieres empezar de nuevo?')) {
+                $('.track').remove();
+            }
+
+        }
+
+        function play() {
+            pause();
+
+            is_playing = true;
+
+            update_tracks();
+
+            loop.play();
+
+
+            /*
+            jQuery('#line').css('top', 0).animate({
+                'top': '+=' + $('#timeline').height()
+            }, 20000 / speed, function () {
+                stop();
+            });
+            */
+
+
+
+            track_timer = setInterval(function () {
+
+                var line_top = parseInt($('#line').css('top'));
+
+                jQuery('#line').css('top', line_top + 1);
+
+                if (line_top >= timeline_height) {
+                    pause();
+
+                    stop();
+                }
+
+
+
+                //console.log(line_top);
+
+                if (tracks[line_top]) {
+                    track_text = tracks[line_top];
+                    console.log('+++++' + track_text);
+
+
+
+                    if (track1.paused) {
+                        $('#track1 source').attr('src', 'static/' + track_text + '.mp3');
+                        track1.load();
+                        track1.play();
+                    } else {
+                        $('#track2 source').attr('src', 'static/' + track_text + '.mp3');
+                        track2.load();
+                        track2.play();
+                    }
+
+
+
+                }
+
+
+
+
+            }, 30 / (speed * 0.5));
+        }
+
+
+
+
+
+        function preloadSound(src) {
+            var sound = document.createElement("audio");
+            if ("src" in sound) {
+                sound.autoPlay = false;
+            }
+            else {
+                sound = document.createElement("bgsound");
+                sound.volume = -10000;
+            }
+            sound.src = src;
+            document.body.appendChild(sound);
+            return sound;
+        }
+
+        // precargar sonidos
+        $('#tracks button').each(function () {
+            var src = 'static/' + $(this).html() + '.mp3';
+            preloadSound(src);
+        });
+
+        for (var i = 1; i < 4; i++) {
+            var src = 'static/loop' + i + '.mp3';
+            preloadSound(src);
+        }
+    </script>
+
+
+</body>
+
+</html>
