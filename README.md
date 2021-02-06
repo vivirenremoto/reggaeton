@@ -1,6 +1,6 @@
 # Reggaeton Machine - Crea tu Hit
  
-[Web - Juego](https://vivirenremoto.github.io/reggaeton/)
+[Web](https://vivirenremoto.github.io/reggaeton/)
 
 [Autor](https://twitter.com/vivirenremoto)
 
